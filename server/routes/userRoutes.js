@@ -5,14 +5,18 @@ const {
   login,
   getProfile,
   updateProfile,
+  createAdminUser,
 } = require("../controllers/authController");
 const { protect } = require("../middlewares/authMiddleware");
 
-// Authentication routes
+// Public routes
 router.post("/register", register);
 router.post("/login", login);
 
-// User profile routes (protected)
+// Admin creation route (DEV only)
+router.post("/create-admin", createAdminUser);
+
+// Private routes
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
 

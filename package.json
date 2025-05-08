@@ -1,5 +1,26 @@
 {
+  "name": "vrudha-care",
+  "version": "1.0.0",
+  "description": "E-commerce website for an old age home to sell handmade products",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "server": "nodemon server/server.js",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "create-admin": "node create-admin.js"
+  },
+  "keywords": [
+    "ecommerce",
+    "mern",
+    "react",
+    "node",
+    "mongodb"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
   "dependencies": {
-    "lucide-react": "^0.508.0"
+    "axios": "^1.9.0",
+    "concurrently": "^8.2.2"
   }
 }

@@ -42,14 +42,16 @@ export const CartProvider = ({ children }) => {
         const updatedItems = [...prevItems];
         updatedItems[existingItemIndex] = {
           ...updatedItems[existingItemIndex],
-          quantity: updatedItems[existingItemIndex].quantity + quantity,
+          quantity:
+            parseInt(updatedItems[existingItemIndex].quantity) +
+            parseInt(quantity),
         };
         toast.success("Updated quantity in cart");
         return updatedItems;
       } else {
         // If product doesn't exist, add it to cart
         toast.success("Added to cart");
-        return [...prevItems, { ...product, quantity }];
+        return [...prevItems, { ...product, quantity: parseInt(quantity) }];
       }
     });
   };
@@ -62,14 +64,16 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantity = (productId, quantity) => {
-    if (quantity <= 0) {
+    const parsedQuantity = parseInt(quantity);
+
+    if (parsedQuantity <= 0) {
       removeFromCart(productId);
       return;
     }
 
     setCartItems((prevItems) =>
       prevItems.map((item) =>
-        item._id === productId ? { ...item, quantity } : item
+        item._id === productId ? { ...item, quantity: parsedQuantity } : item
       )
     );
   };

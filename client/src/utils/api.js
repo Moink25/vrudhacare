@@ -1,13 +1,16 @@
 import axios from "axios";
 
+// Use environment variable for API URL, with fallback for development
+const baseURL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000",
+  baseURL,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Add token from localStorage to authorization header for all requests
+// Add interceptor to include authentication token in requests
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");

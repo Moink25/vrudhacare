@@ -324,7 +324,7 @@ const Products = () => {
                       <Link to={`/product/${product._id}`}>
                         <img
                           src={
-                            product.images[0] ||
+                            product.images[0]?.url ||
                             "https://placehold.co/300x300?text=Product+Image"
                           }
                           alt={product.name}

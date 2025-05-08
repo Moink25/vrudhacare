@@ -19,9 +19,21 @@ const AdminOrders = () => {
     try {
       setLoading(true);
       const response = await api.get("/api/orders");
-      setOrders(response.data);
+
+      // Handle different response formats
+      if (response.data.orders) {
+        setOrders(response.data.orders);
+      } else if (Array.isArray(response.data)) {
+        setOrders(response.data);
+      } else {
+        console.error("Unexpected response format:", response.data);
+        setOrders([]);
+        toast.error("Failed to parse orders data");
+      }
+
       setLoading(false);
     } catch (error) {
+      console.error("Failed to fetch orders:", error);
       toast.error("Failed to fetch orders");
       setLoading(false);
     }

@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
-import { ShoppingCart, Menu, X, User, LogOut } from "lucide-react";
+import { ShoppingCart, Menu, X, User, LogOut, UserCog } from "lucide-react";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, isAdmin, logout } = useAuth();
   const { cartItems } = useCart();
   const navigate = useNavigate();
 
@@ -51,6 +51,14 @@ const Navbar = () => {
                 >
                   Donate
                 </Link>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-md font-medium"
+                  >
+                    Admin
+                  </Link>
+                )}
               </div>
             </div>
           </div>
@@ -75,7 +83,11 @@ const Navbar = () => {
                       onClick={toggleProfile}
                       className="max-w-xs bg-emerald-600 rounded-full flex items-center text-sm focus:outline-none p-2"
                     >
-                      <User className="h-6 w-6" />
+                      {isAdmin ? (
+                        <UserCog className="h-6 w-6" />
+                      ) : (
+                        <User className="h-6 w-6" />
+                      )}
                     </button>
                   </div>
                   {isProfileOpen && (
@@ -83,6 +95,11 @@ const Navbar = () => {
                       <div className="py-1" role="menu">
                         <div className="px-4 py-2 text-sm text-gray-700 border-b">
                           Hello, {user?.name || "User"}
+                          {isAdmin && (
+                            <span className="ml-2 px-2 py-0.5 text-xs bg-blue-100 text-blue-800 rounded-full">
+                              Admin
+                            </span>
+                          )}
                         </div>
                         <Link
                           to="/profile"
@@ -92,7 +109,7 @@ const Navbar = () => {
                         >
                           Profile
                         </Link>
-                        {user?.isAdmin && (
+                        {isAdmin && (
                           <Link
                             to="/admin"
                             className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -184,10 +201,10 @@ const Navbar = () => {
                 >
                   Profile
                 </Link>
-                {user?.isAdmin && (
+                {isAdmin && (
                   <Link
                     to="/admin"
-                    className="block px-3 py-2 rounded-md text-base font-medium hover:bg-emerald-600"
+                    className="block px-3 py-2 rounded-md text-base font-medium bg-blue-600 hover:bg-blue-700"
                     onClick={toggleMenu}
                   >
                     Admin Dashboard

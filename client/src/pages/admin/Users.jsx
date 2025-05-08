@@ -17,9 +17,21 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       const response = await api.get("/api/users");
-      setUsers(response.data);
+
+      // Handle different response formats
+      if (response.data.users) {
+        setUsers(response.data.users);
+      } else if (Array.isArray(response.data)) {
+        setUsers(response.data);
+      } else {
+        console.error("Unexpected response format:", response.data);
+        setUsers([]);
+        toast.error("Failed to parse users data");
+      }
+
       setLoading(false);
     } catch (error) {
+      console.error("Failed to fetch users:", error);
       toast.error("Failed to fetch users");
       setLoading(false);
     }

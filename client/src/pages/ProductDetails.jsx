@@ -34,12 +34,12 @@ const ProductDetails = () => {
       setLoading(true);
       try {
         const response = await api.get(`/api/products/${id}`);
-        setProduct(response.data);
+        setProduct(response.data.product);
         setActiveImage(0);
 
         // Fetch related products
         const relatedResponse = await api.get(
-          `/api/products?category=${response.data.category}&limit=4&exclude=${id}`
+          `/api/products?category=${response.data.product.category}&limit=4&exclude=${id}`
         );
         setRelatedProducts(relatedResponse.data.products);
 
@@ -185,7 +185,7 @@ const ProductDetails = () => {
               <div className="relative h-64 sm:h-80 md:h-96 bg-gray-100 rounded-lg overflow-hidden">
                 <img
                   src={
-                    product.images[activeImage] ||
+                    (product.images && product.images[activeImage]?.url) ||
                     "https://placehold.co/600x600?text=Product+Image"
                   }
                   alt={product.name}
@@ -217,7 +217,7 @@ const ProductDetails = () => {
               </div>
 
               {/* Thumbnails */}
-              {product.images.length > 1 && (
+              {product.images && product.images.length > 1 && (
                 <div className="mt-4 flex space-x-2 overflow-x-auto">
                   {product.images.map((image, index) => (
                     <button
@@ -231,7 +231,7 @@ const ProductDetails = () => {
                     >
                       <img
                         src={
-                          image ||
+                          image.url ||
                           "https://placehold.co/100x100?text=Product+Image"
                         }
                         alt={`${product.name} thumbnail ${index + 1}`}
@@ -506,7 +506,7 @@ const ProductDetails = () => {
                   <Link to={`/product/${product._id}`}>
                     <img
                       src={
-                        product.images[0] ||
+                        product.images[0]?.url ||
                         "https://placehold.co/300x300?text=Product+Image"
                       }
                       alt={product.name}

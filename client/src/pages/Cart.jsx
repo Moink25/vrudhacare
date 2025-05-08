@@ -87,8 +87,9 @@ const Cart = () => {
                         <div className="sm:w-20 sm:h-20 mb-4 sm:mb-0 flex-shrink-0">
                           <img
                             src={
-                              item.images?.[0] ||
-                              "https://placehold.co/100x100?text=Product+Image"
+                              item.images && item.images[0]?.url
+                                ? item.images[0].url
+                                : "https://placehold.co/100x100?text=Product+Image"
                             }
                             alt={item.name}
                             className="w-full h-full object-cover rounded-md"

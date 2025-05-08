@@ -158,3 +158,67 @@ exports.updateProfile = async (req, res) => {
     });
   }
 };
+
+// @desc    Create test admin user (DEV ONLY)
+// @route   POST /api/auth/create-admin
+// @access  Public
+exports.createAdminUser = async (req, res) => {
+  try {
+    // Check if we're in development environment
+    if (process.env.NODE_ENV === "production") {
+      return res.status(403).json({
+        success: false,
+        message: "This endpoint is not available in production",
+      });
+    }
+
+    const { name, email, password } = req.body;
+
+    // Validate inputs
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide name, email and password",
+      });
+    }
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+
+    if (user) {
+      // If user exists but not admin, make them admin
+      if (user.role !== "admin") {
+        user.role = "admin";
+        await user.save();
+
+        return res.status(200).json({
+          success: true,
+          message: `User ${email} upgraded to admin role`,
+        });
+      }
+
+      return res.status(400).json({
+        success: false,
+        message: "Admin user with this email already exists",
+      });
+    }
+
+    // Create new admin user
+    user = await User.create({
+      name,
+      email,
+      password,
+      role: "admin",
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Admin user created successfully: ${email}`,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

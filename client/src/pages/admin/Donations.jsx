@@ -19,9 +19,21 @@ const AdminDonations = () => {
     try {
       setLoading(true);
       const response = await api.get("/api/donations");
-      setDonations(response.data);
+
+      // Handle different response formats
+      if (response.data.donations) {
+        setDonations(response.data.donations);
+      } else if (Array.isArray(response.data)) {
+        setDonations(response.data);
+      } else {
+        console.error("Unexpected response format:", response.data);
+        setDonations([]);
+        toast.error("Failed to parse donations data");
+      }
+
       setLoading(false);
     } catch (error) {
+      console.error("Failed to fetch donations:", error);
       toast.error("Failed to fetch donations");
       setLoading(false);
     }
@@ -50,17 +62,17 @@ const AdminDonations = () => {
       "Email",
       "Amount",
       "Date",
-      "Payment Method",
+      "Payment ID",
       "Status",
     ];
 
     const csvData = donations.map((donation) => [
       donation._id,
-      donation.donorName,
+      donation.name,
       donation.email,
       donation.amount,
       formatDate(donation.createdAt),
-      donation.paymentMethod,
+      donation.paymentId,
       donation.status,
     ]);
 
@@ -139,7 +151,7 @@ const AdminDonations = () => {
               <tr key={donation._id}>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">
-                    {donation.donorName}
+                    {donation.name}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
@@ -158,7 +170,7 @@ const AdminDonations = () => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      donation.status === "Completed"
+                      donation.status === "completed"
                         ? "bg-green-100 text-green-800"
                         : "bg-yellow-100 text-yellow-800"
                     }`}
@@ -201,17 +213,11 @@ const AdminDonations = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Donor Name</p>
-                <p className="font-medium">{currentDonation.donorName}</p>
+                <p className="font-medium">{currentDonation.name}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Email</p>
                 <p className="font-medium">{currentDonation.email}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Phone</p>
-                <p className="font-medium">
-                  {currentDonation.phone || "Not provided"}
-                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Amount</p>
@@ -224,8 +230,10 @@ const AdminDonations = () => {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Payment Method</p>
-                <p className="font-medium">{currentDonation.paymentMethod}</p>
+                <p className="text-sm text-gray-500">Payment ID</p>
+                <p className="font-medium font-mono text-sm">
+                  {currentDonation.paymentId}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Status</p>
@@ -239,23 +247,6 @@ const AdminDonations = () => {
                   </p>
                 </div>
               )}
-              {currentDonation.razorpayPaymentId && (
-                <div>
-                  <p className="text-sm text-gray-500">Razorpay Payment ID</p>
-                  <p className="font-medium font-mono text-sm">
-                    {currentDonation.razorpayPaymentId}
-                  </p>
-                </div>
-              )}
-            </div>
-
-            <div className="mt-6 flex justify-end">
-              <button
-                onClick={() => setShowDetailModal(false)}
-                className="bg-gray-200 text-gray-800 px-4 py-2 rounded-md"
-              >
-                Close
-              </button>
             </div>
           </div>
         </div>

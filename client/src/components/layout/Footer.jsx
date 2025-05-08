@@ -63,12 +63,12 @@ const Footer = () => {
               <li className="flex items-center">
                 <MapPin className="h-4 w-4 mr-2 text-emerald-300" />
                 <span className="text-emerald-100">
-                  123 Care Lane, Silver City, SV 12345
+                  VIT Pune, Upper IndiraNagar,
                 </span>
               </li>
               <li className="flex items-center">
                 <Phone className="h-4 w-4 mr-2 text-emerald-300" />
-                <span className="text-emerald-100">+1 (555) 123-4567</span>
+                <span className="text-emerald-100">+91 1234567890</span>
               </li>
               <li className="flex items-center">
                 <Mail className="h-4 w-4 mr-2 text-emerald-300" />

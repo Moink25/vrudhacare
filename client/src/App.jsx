@@ -5,7 +5,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { useEffect, lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { useAuth, AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 import Navbar from "./components/layout/Navbar";
@@ -25,6 +25,7 @@ const Donation = lazy(() => import("./pages/Donation"));
 const Login = lazy(() => import("./pages/Login"));
 const Register = lazy(() => import("./pages/Register"));
 const Profile = lazy(() => import("./pages/Profile"));
+const OrderPage = lazy(() => import("./pages/OrderPage"));
 const AdminDashboard = lazy(() => import("./pages/admin/Dashboard"));
 const AdminProducts = lazy(() => import("./pages/admin/Products"));
 const AdminOrders = lazy(() => import("./pages/admin/Orders"));
@@ -44,13 +45,13 @@ const PrivateRoute = ({ children }) => {
 };
 
 const AdminRoute = ({ children }) => {
-  const { user, loading } = useAuth();
+  const { isAdmin, loading } = useAuth();
 
   if (loading) {
     return <Loader />;
   }
 
-  return user && user.isAdmin ? children : <Navigate to="/" />;
+  return isAdmin ? children : <Navigate to="/" />;
 };
 
 function App() {
@@ -78,6 +79,14 @@ function App() {
                     element={
                       <PrivateRoute>
                         <Profile />
+                      </PrivateRoute>
+                    }
+                  />
+                  <Route
+                    path="/order/:id"
+                    element={
+                      <PrivateRoute>
+                        <OrderPage />
                       </PrivateRoute>
                     }
                   />

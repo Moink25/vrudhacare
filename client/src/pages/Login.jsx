@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Mail, Lock, ArrowRight } from "lucide-react";
+import { Mail, Lock, ArrowRight, UserCog } from "lucide-react";
 import Loader from "../components/ui/Loader";
 
 const Login = () => {
@@ -15,6 +15,7 @@ const Login = () => {
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [isAdminLogin, setIsAdminLogin] = useState(false);
 
   // Get redirect path from URL query string if present
   const redirect = new URLSearchParams(location.search).get("redirect") || "/";
@@ -73,13 +74,21 @@ const Login = () => {
     try {
       const success = await login(formData.email, formData.password);
       if (success) {
-        navigate(redirect);
+        if (isAdminLogin) {
+          navigate("/admin");
+        } else {
+          navigate(redirect);
+        }
       }
     } catch (error) {
       console.error("Login error:", error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const toggleAdminLogin = () => {
+    setIsAdminLogin(!isAdminLogin);
   };
 
   if (authLoading) return <Loader fullPage />;
@@ -104,6 +113,21 @@ const Login = () => {
         </div>
 
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div className="flex justify-end mb-4">
+            <button
+              type="button"
+              onClick={toggleAdminLogin}
+              className={`flex items-center text-sm px-3 py-1 rounded-full ${
+                isAdminLogin
+                  ? "bg-emerald-100 text-emerald-800"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              <UserCog className="h-4 w-4 mr-1" />
+              {isAdminLogin ? "Admin Login" : "Customer Login"}
+            </button>
+          </div>
+
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label
@@ -198,40 +222,48 @@ const Login = () => {
                 className={`group relative w-full flex justify-center py-2 px-4 border border-transparent rounded-md text-white ${
                   loading
                     ? "bg-emerald-400"
+                    : isAdminLogin
+                    ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-emerald-600 hover:bg-emerald-700"
                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 font-medium transition-colors duration-150`}
               >
-                {loading ? "Signing in..." : "Sign in"}
+                {loading
+                  ? "Signing in..."
+                  : isAdminLogin
+                  ? "Admin Sign in"
+                  : "Sign in"}
                 {!loading && <ArrowRight className="ml-2 h-5 w-5" />}
               </button>
             </div>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
-                  Don't have an account?
-                </span>
-              </div>
-            </div>
-
+          {!isAdminLogin && (
             <div className="mt-6">
-              <Link
-                to={
-                  redirect !== "/"
-                    ? `/register?redirect=${redirect}`
-                    : "/register"
-                }
-                className="w-full flex justify-center items-center py-2 px-4 border border-emerald-600 rounded-md shadow-sm font-medium text-emerald-600 hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors duration-150"
-              >
-                Create a new account
-              </Link>
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">
+                    Don't have an account?
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <Link
+                  to={
+                    redirect !== "/"
+                      ? `/register?redirect=${redirect}`
+                      : "/register"
+                  }
+                  className="w-full flex justify-center items-center py-2 px-4 border border-emerald-600 rounded-md shadow-sm font-medium text-emerald-600 hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors duration-150"
+                >
+                  Create a new account
+                </Link>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

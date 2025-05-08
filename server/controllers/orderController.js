@@ -228,3 +228,42 @@ exports.updateOrderToDelivered = async (req, res) => {
     });
   }
 };
+
+// @desc    Update order status
+// @route   PUT /api/orders/:id/status
+// @access  Private/Admin
+exports.updateOrderStatus = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
+    }
+
+    // Update status
+    order.status = req.body.status;
+
+    // If status is Delivered, also update isDelivered fields
+    if (req.body.status === "Delivered") {
+      order.isDelivered = true;
+      order.deliveredAt = Date.now();
+    }
+
+    // If status is Cancelled, no additional updates needed
+
+    const updatedOrder = await order.save();
+
+    res.status(200).json({
+      success: true,
+      order: updatedOrder,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
