@@ -4,13 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
 import { toast } from "react-hot-toast";
 import Loader from "../components/ui/Loader";
-import {
-  Package,
-  Truck,
-  Clock,
-  CheckCircle,
-  ArrowLeft,
-} from "lucide-react";
+import { Package, Truck, Clock, CheckCircle, ArrowLeft } from "lucide-react";
 
 const OrderPage = () => {
   const { id } = useParams();
