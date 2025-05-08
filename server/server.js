@@ -21,7 +21,7 @@ app.use(
             "https://vrudha-care-frontend.netlify.app",
             "https://vrudha-care.onrender.com",
           ]
-        : "http://localhost:3000",
+        : "https://vrudhacare.onrender.com",
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],

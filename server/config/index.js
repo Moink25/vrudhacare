@@ -5,7 +5,7 @@ const config = {
   jwtSecret: process.env.JWT_SECRET || "vrudhacareappsecret",
   razorpayKeyId: process.env.RAZORPAY_KEY_ID,
   razorpayKeySecret: process.env.RAZORPAY_KEY_SECRET,
-  clientUrl: process.env.CLIENT_URL || "http://localhost:3000",
+  clientUrl: process.env.CLIENT_URL || "https://vrudhacare.onrender.com",
   cookieOptions: {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
